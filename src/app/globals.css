@@ -1,26 +1,181 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf7f2;
+  --foreground: #4a4a3f;
+  --card: #faf8f4;
+  --mist: #faf7f2;
+  --forest: #2d5016;
+  --leaf: #639922;
+  --coral: #c94f2a;
+  --amber: #d9a441;
+  --gulabi: #d96c9f;
+  --secondary: #6f6a60;
+  --warm-border: #cfc8ba;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Hind", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Tiro Devanagari Hindi", Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-hind), "Hind", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(217, 164, 65, 0.35);
+}
+
+.font-display {
+  font-family: var(--font-tiro), "Tiro Devanagari Hindi", Georgia, serif;
+}
+
+.font-ui {
+  font-family: var(--font-hind), "Hind", ui-sans-serif, system-ui, sans-serif;
+}
+
+.container-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin-inline: auto;
+}
+
+.hairline {
+  border-color: rgba(207, 200, 186, 0.8);
+}
+
+.hero-section {
+  background: #faf7f2;
+}
+
+.artwork-visual {
+  --tone-one: #e76f51;
+  --tone-two: #d9a441;
+  --tone-three: #c0dd97;
+  --ink: #3b6d11;
+  position: relative;
+  overflow: hidden;
+  background: #f7f5f0;
+  border: 1px solid rgba(207, 200, 186, 0.8);
+}
+
+.hero-artwork-card {
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+.artwork-visual::before,
+.artwork-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.artwork-visual::before {
+  opacity: 0.95;
+}
+
+.artwork-visual::after {
+  background-image:
+    linear-gradient(rgba(36, 35, 31, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36, 35, 31, 0.05) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mix-blend-mode: multiply;
+  opacity: 0.22;
+}
+
+.artwork-visual[data-pattern="madhubani"]::before {
+  background:
+    radial-gradient(circle at 18% 22%, var(--tone-one) 0 7%, transparent 8%),
+    radial-gradient(circle at 80% 76%, var(--tone-two) 0 10%, transparent 11%),
+    repeating-linear-gradient(45deg, transparent 0 12px, rgba(59, 109, 17, 0.22) 13px 15px),
+    linear-gradient(135deg, var(--tone-three), #faf8f4);
+}
+
+.artwork-visual[data-pattern="warli"]::before {
+  background:
+    radial-gradient(circle at 28% 32%, #f7f5f0 0 5%, transparent 6%),
+    radial-gradient(circle at 68% 58%, #f7f5f0 0 5%, transparent 6%),
+    repeating-linear-gradient(90deg, rgba(247, 245, 240, 0.58) 0 2px, transparent 2px 22px),
+    linear-gradient(140deg, var(--tone-one), var(--ink));
+}
+
+.artwork-visual[data-pattern="gond"]::before {
+  background:
+    radial-gradient(circle at 20% 74%, var(--tone-two) 0 8%, transparent 9%),
+    radial-gradient(circle at 66% 28%, var(--tone-one) 0 12%, transparent 13%),
+    repeating-radial-gradient(circle at 48% 52%, transparent 0 8px, rgba(36, 35, 31, 0.18) 9px 11px),
+    linear-gradient(120deg, var(--tone-three), #faf8f4);
+}
+
+.artwork-visual[data-pattern="pattachitra"]::before {
+  background:
+    radial-gradient(circle at 50% 50%, #faf8f4 0 18%, transparent 19%),
+    repeating-conic-gradient(from 18deg at 50% 50%, var(--tone-one) 0 12deg, var(--tone-two) 13deg 25deg, var(--ink) 26deg 32deg),
+    #f7f5f0;
+}
+
+.artwork-visual[data-pattern="tanjore"]::before {
+  background:
+    radial-gradient(circle at 50% 37%, rgba(217, 164, 65, 0.92) 0 17%, transparent 18%),
+    linear-gradient(90deg, transparent 0 36%, rgba(59, 109, 17, 0.36) 37% 63%, transparent 64%),
+    repeating-linear-gradient(0deg, rgba(217, 164, 65, 0.42) 0 4px, transparent 5px 16px),
+    linear-gradient(135deg, var(--tone-one), #faf8f4);
+}
+
+.artwork-visual[data-pattern="kalamkari"]::before,
+.artwork-visual[data-pattern="phulkari"]::before,
+.artwork-visual[data-pattern="block"]::before,
+.artwork-visual[data-pattern="miniature"]::before,
+.artwork-visual[data-pattern="pottery"]::before,
+.artwork-visual[data-pattern="default"]::before {
+  background:
+    radial-gradient(circle at 26% 26%, var(--tone-one) 0 8%, transparent 9%),
+    radial-gradient(circle at 75% 34%, var(--tone-two) 0 9%, transparent 10%),
+    radial-gradient(circle at 56% 78%, var(--ink) 0 8%, transparent 9%),
+    repeating-linear-gradient(135deg, rgba(95, 143, 47, 0.18) 0 8px, transparent 9px 22px),
+    linear-gradient(120deg, var(--tone-three), #faf8f4);
+}
+
+.masonry-columns {
+  column-count: 1;
+  column-gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .masonry-columns {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 960px) {
+  .masonry-columns {
+    column-count: 3;
+  }
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 1rem;
 }
