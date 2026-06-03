@@ -23,8 +23,22 @@ create table if not exists public.artists (
   story text,
   verified boolean not null default false,
   published boolean not null default false,
+  approval_status text not null default 'pending_approval'
+    check (approval_status in ('pending_approval', 'approved', 'rejected')),
+  approved_by uuid references public.profiles(id) on delete set null,
+  approved_at timestamptz,
+  rejection_reason text,
+  submitted_at timestamptz not null default now(),
   created_at timestamptz not null default now()
 );
+
+alter table public.artists
+  add column if not exists approval_status text not null default 'pending_approval'
+    check (approval_status in ('pending_approval', 'approved', 'rejected')),
+  add column if not exists approved_by uuid references public.profiles(id) on delete set null,
+  add column if not exists approved_at timestamptz,
+  add column if not exists rejection_reason text,
+  add column if not exists submitted_at timestamptz not null default now();
 
 create table if not exists public.artworks (
   id uuid primary key default gen_random_uuid(),
@@ -189,6 +203,14 @@ begin
 end;
 $$;
 
+-- First admin setup options:
+-- Option A: add NEXT_PUBLIC_ADMIN_EMAILS=admin@example.com to .env.local so the
+-- auth panel marks matching magic-link signups as Admin.
+-- Option B: manually promote the first admin after signup:
+-- update public.profiles
+-- set role = 'Admin'
+-- where id = (select id from auth.users where email = 'admin@example.com');
+
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
@@ -211,17 +233,39 @@ alter table public.regional_art_forms enable row level security;
 alter table public.ads enable row level security;
 alter table public.analytics_events enable row level security;
 
-create policy "Public artists are readable" on public.artists
-  for select using (published = true or verified = true);
+drop policy if exists "Public artists are readable" on public.artists;
+create policy "Public approved artists are readable" on public.artists
+  for select using (approval_status = 'approved');
 
-create policy "Public artworks are readable" on public.artworks
-  for select using (true);
+drop policy if exists "Public artworks are readable" on public.artworks;
+create policy "Public approved artist artworks are readable" on public.artworks
+  for select using (
+    exists (
+      select 1 from public.artists
+      where artists.id = artworks.artist_id
+      and artists.approval_status = 'approved'
+    )
+  );
 
-create policy "Public posts are readable" on public.posts
-  for select using (true);
+drop policy if exists "Public posts are readable" on public.posts;
+create policy "Public approved artist posts are readable" on public.posts
+  for select using (
+    exists (
+      select 1 from public.artists
+      where artists.id = posts.artist_id
+      and artists.approval_status = 'approved'
+    )
+  );
 
-create policy "Public workshops are readable" on public.workshops
-  for select using (true);
+drop policy if exists "Public workshops are readable" on public.workshops;
+create policy "Public approved artist workshops are readable" on public.workshops
+  for select using (
+    artist_id is null or exists (
+      select 1 from public.artists
+      where artists.id = workshops.artist_id
+      and artists.approval_status = 'approved'
+    )
+  );
 
 create policy "Public challenges are readable" on public.challenges
   for select using (true);
@@ -257,6 +301,40 @@ create policy "Users can read own profile" on public.profiles
 
 create policy "Users can update own profile" on public.profiles
   for update using (id = auth.uid());
+
+create policy "Artists can create own pending application" on public.artists
+  for insert with check (
+    profile_id = auth.uid()
+    and approval_status = 'pending_approval'
+  );
+
+create policy "Artists can edit own unapproved application" on public.artists
+  for update using (
+    profile_id = auth.uid()
+    and approval_status in ('pending_approval', 'rejected')
+  )
+  with check (
+    profile_id = auth.uid()
+    and approval_status in ('pending_approval', 'rejected')
+  );
+
+create policy "Admins can read all artists" on public.artists
+  for select using (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = auth.uid()
+      and profiles.role = 'Admin'
+    )
+  );
+
+create policy "Admins can update artist approval" on public.artists
+  for update using (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = auth.uid()
+      and profiles.role = 'Admin'
+    )
+  );
 
 create policy "Authenticated users can comment" on public.comments
   for insert with check (profile_id = auth.uid());

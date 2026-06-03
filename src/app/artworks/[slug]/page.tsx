@@ -9,9 +9,9 @@ import { SectionHeader } from "@/components/section-header";
 import { ShareTools } from "@/components/share-tools";
 import { SponsoredAd } from "@/components/sponsored-ad";
 import {
-  artworks,
-  getArtistForArtwork,
-  getArtworkBySlug,
+  getApprovedArtistForArtwork,
+  getPublicArtworkBySlug,
+  getPublicArtworks,
   sponsoredAds,
 } from "@/lib/data";
 import { formatPrice } from "@/lib/utils";
@@ -20,21 +20,23 @@ type ArtworkPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
-  return artworks.map((artwork) => ({ slug: artwork.slug }));
+  return getPublicArtworks().map((artwork) => ({ slug: artwork.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: ArtworkPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const artwork = getArtworkBySlug(slug);
+  const artwork = getPublicArtworkBySlug(slug);
 
   if (!artwork) {
     return { title: "Artwork not found" };
   }
 
-  const artist = getArtistForArtwork(artwork);
+  const artist = getApprovedArtistForArtwork(artwork);
 
   return {
     title: artwork.title,
@@ -44,14 +46,14 @@ export async function generateMetadata({
 
 export default async function ArtworkDetailPage({ params }: ArtworkPageProps) {
   const { slug } = await params;
-  const artwork = getArtworkBySlug(slug);
+  const artwork = getPublicArtworkBySlug(slug);
 
   if (!artwork) {
     notFound();
   }
 
-  const artist = getArtistForArtwork(artwork);
-  const related = artworks
+  const artist = getApprovedArtistForArtwork(artwork);
+  const related = getPublicArtworks()
     .filter((item) => item.style === artwork.style && item.slug !== artwork.slug)
     .slice(0, 3);
 

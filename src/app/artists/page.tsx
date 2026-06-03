@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ArtistExplorer } from "@/components/artist-explorer";
 import { SectionHeader } from "@/components/section-header";
-import { artists } from "@/lib/data";
+import { getApprovedArtists } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Explore artists",
@@ -18,7 +18,7 @@ export default function ArtistsPage() {
           subtitle="Find painters, illustrators, craft makers, and regional creators from across India."
         />
         <div className="mt-8">
-          <ArtistExplorer artists={artists} />
+          <ArtistExplorer artists={getApprovedArtists()} />
         </div>
       </div>
     </section>

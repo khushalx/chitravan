@@ -7,22 +7,26 @@ import { CommunityPostCard } from "@/components/community-post-card";
 import { SectionHeader } from "@/components/section-header";
 import { SponsoredAd } from "@/components/sponsored-ad";
 import {
-  artists,
-  artworks,
   collaborationCalls,
-  communityPosts,
-  getArtistBySlug,
-  getArtworkBySlug,
+  getApprovedArtists,
+  getPublicArtworks,
+  getApprovedArtistBySlug,
+  getPublicArtworkBySlug,
+  getPublicCommunityPosts,
   getFeaturedArtworks,
   grantListings,
   monthlyChallenges,
-  regionalArtForms,
+  getPublicRegionalArtForms,
   sponsoredAds,
   workshops,
 } from "@/lib/data";
 
 export default function Home() {
   const featuredWorks = getFeaturedArtworks();
+  const artists = getApprovedArtists();
+  const artworks = getPublicArtworks();
+  const communityPosts = getPublicCommunityPosts();
+  const regionalArtForms = getPublicRegionalArtForms();
   const opportunityPreview = [
     ...monthlyChallenges.slice(0, 1).map((item) => ({
       id: item.id,
@@ -152,8 +156,8 @@ export default function Home() {
           <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_360px]">
             <div className="grid gap-4">
               {communityPosts.slice(0, 3).map((post) => {
-                const artist = getArtistBySlug(post.artistSlug);
-                const artwork = getArtworkBySlug(post.artworkSlug);
+                const artist = getApprovedArtistBySlug(post.artistSlug);
+                const artwork = getPublicArtworkBySlug(post.artworkSlug);
                 if (!artist || !artwork) return null;
                 return (
                   <CommunityPostCard
@@ -193,7 +197,7 @@ export default function Home() {
             />
             <div className="mt-8 grid gap-4">
               {workshops.slice(0, 3).map((workshop) => {
-                const teacher = getArtistBySlug(workshop.teacherSlug);
+                const teacher = getApprovedArtistBySlug(workshop.teacherSlug);
                 return (
                   <article
                     key={workshop.id}

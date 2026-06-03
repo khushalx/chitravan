@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { RegionalExplorer } from "@/components/regional-explorer";
 import { SectionHeader } from "@/components/section-header";
-import { regionalArtForms } from "@/lib/data";
+import { getPublicRegionalArtForms } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Regional art discovery",
@@ -18,7 +18,7 @@ export default function RegionalArtPage() {
           subtitle="Discover folk and contemporary practices across states, mediums, and local communities."
         />
         <div className="mt-8">
-          <RegionalExplorer traditions={regionalArtForms} />
+          <RegionalExplorer traditions={getPublicRegionalArtForms()} />
         </div>
       </div>
     </section>

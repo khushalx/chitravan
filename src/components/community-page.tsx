@@ -7,22 +7,23 @@ import { PostComposer } from "@/components/post-composer";
 import { SponsoredAd } from "@/components/sponsored-ad";
 import type { CommunityPost } from "@/lib/data";
 import {
-  artists,
-  communityPosts,
-  getArtistBySlug,
-  getArtworkBySlug,
+  getApprovedArtistBySlug,
+  getApprovedArtists,
+  getPublicArtworkBySlug,
+  getPublicCommunityPosts,
   sponsoredAds,
 } from "@/lib/data";
 
 export function CommunityPage() {
-  const [posts, setPosts] = useState<CommunityPost[]>(communityPosts);
+  const [posts, setPosts] = useState<CommunityPost[]>(getPublicCommunityPosts());
+  const approvedArtists = getApprovedArtists();
 
   const trendingStyles = useMemo(
     () =>
-      Array.from(new Set(artists.flatMap((artist) => artist.styles))).slice(0, 7),
-    [],
+      Array.from(new Set(approvedArtists.flatMap((artist) => artist.styles))).slice(0, 7),
+    [approvedArtists],
   );
-  const suggestedArtists = artists
+  const suggestedArtists = approvedArtists
     .slice()
     .sort((a, b) => b.followers - a.followers)
     .slice(0, 4);
@@ -55,8 +56,8 @@ export function CommunityPage() {
         <PostComposer onPost={addPost} />
         {posts.length ? (
           posts.map((post, index) => {
-            const artist = getArtistBySlug(post.artistSlug);
-            const artwork = getArtworkBySlug(post.artworkSlug);
+            const artist = getApprovedArtistBySlug(post.artistSlug);
+            const artwork = getPublicArtworkBySlug(post.artworkSlug);
             if (!artist || !artwork) return null;
 
             return (

@@ -20,6 +20,7 @@ export type Artist = {
   id: string;
   slug: string;
   name: string;
+  email?: string;
   state: string;
   city: string;
   region: string;
@@ -32,6 +33,11 @@ export type Artist = {
   profileViews: number;
   audienceLocation: string;
   topArtworkSlug: string;
+  approval_status: "pending_approval" | "approved" | "rejected";
+  approved_by?: string | null;
+  approved_at?: string | null;
+  rejection_reason?: string | null;
+  submitted_at: string;
   visual: Visual;
 };
 
@@ -162,6 +168,11 @@ export const artists: Artist[] = [
     profileViews: 18400,
     audienceLocation: "Patna, Delhi, Pune",
     topArtworkSlug: "courtyard-fish-song",
+    approval_status: "approved",
+    approved_by: "admin-demo-01",
+    approved_at: "2026-05-01T10:00:00.000Z",
+    rejection_reason: null,
+    submitted_at: "2026-04-28T09:30:00.000Z",
     visual: {
       pattern: "madhubani",
       colors: ["#E76F51", "#D9A441", "#C0DD97", "#3B6D11"],
@@ -184,6 +195,11 @@ export const artists: Artist[] = [
     profileViews: 12900,
     audienceLocation: "Mumbai, Nashik, Bengaluru",
     topArtworkSlug: "night-harvest-circle",
+    approval_status: "approved",
+    approved_by: "admin-demo-01",
+    approved_at: "2026-05-02T10:00:00.000Z",
+    rejection_reason: null,
+    submitted_at: "2026-04-29T09:30:00.000Z",
     visual: {
       pattern: "warli",
       colors: ["#5F8F2F", "#3B6D11", "#FAF8F4", "#24231F"],
@@ -206,6 +222,11 @@ export const artists: Artist[] = [
     profileViews: 7600,
     audienceLocation: "Bhopal, Hyderabad, Kochi",
     topArtworkSlug: "sal-tree-breathing",
+    approval_status: "approved",
+    approved_by: "admin-demo-01",
+    approved_at: "2026-05-03T10:00:00.000Z",
+    rejection_reason: null,
+    submitted_at: "2026-04-30T09:30:00.000Z",
     visual: {
       pattern: "gond",
       colors: ["#C0DD97", "#D96C9F", "#D9A441", "#3B6D11"],
@@ -228,6 +249,11 @@ export const artists: Artist[] = [
     profileViews: 20200,
     audienceLocation: "Bhubaneswar, Kolkata, Chennai",
     topArtworkSlug: "jagannath-rath-study",
+    approval_status: "approved",
+    approved_by: "admin-demo-01",
+    approved_at: "2026-05-04T10:00:00.000Z",
+    rejection_reason: null,
+    submitted_at: "2026-05-01T09:30:00.000Z",
     visual: {
       pattern: "pattachitra",
       colors: ["#E76F51", "#D9A441", "#FAF8F4", "#3B6D11"],
@@ -250,6 +276,11 @@ export const artists: Artist[] = [
     profileViews: 24400,
     audienceLocation: "Chennai, Coimbatore, Dubai",
     topArtworkSlug: "golden-veena-study",
+    approval_status: "approved",
+    approved_by: "admin-demo-01",
+    approved_at: "2026-05-05T10:00:00.000Z",
+    rejection_reason: null,
+    submitted_at: "2026-05-02T09:30:00.000Z",
     visual: {
       pattern: "tanjore",
       colors: ["#D9A441", "#E76F51", "#FAF8F4", "#3B6D11"],
@@ -272,6 +303,11 @@ export const artists: Artist[] = [
     profileViews: 6900,
     audienceLocation: "Hyderabad, Jaipur, Ahmedabad",
     topArtworkSlug: "indigo-garden-cloth",
+    approval_status: "approved",
+    approved_by: "admin-demo-01",
+    approved_at: "2026-05-06T10:00:00.000Z",
+    rejection_reason: null,
+    submitted_at: "2026-05-03T09:30:00.000Z",
     visual: {
       pattern: "kalamkari",
       colors: ["#5F8F2F", "#D96C9F", "#D9A441", "#24231F"],
@@ -294,6 +330,11 @@ export const artists: Artist[] = [
     profileViews: 9800,
     audienceLocation: "Chandigarh, Ludhiana, Delhi",
     topArtworkSlug: "gulabi-field-stitch",
+    approval_status: "approved",
+    approved_by: "admin-demo-01",
+    approved_at: "2026-05-07T10:00:00.000Z",
+    rejection_reason: null,
+    submitted_at: "2026-05-04T09:30:00.000Z",
     visual: {
       pattern: "phulkari",
       colors: ["#D96C9F", "#E76F51", "#D9A441", "#3B6D11"],
@@ -316,9 +357,71 @@ export const artists: Artist[] = [
     profileViews: 8300,
     audienceLocation: "Jaipur, Udaipur, Gurugram",
     topArtworkSlug: "desert-repeat-one",
+    approval_status: "approved",
+    approved_by: "admin-demo-01",
+    approved_at: "2026-05-08T10:00:00.000Z",
+    rejection_reason: null,
+    submitted_at: "2026-05-05T09:30:00.000Z",
     visual: {
       pattern: "block",
       colors: ["#D9A441", "#C0DD97", "#E76F51", "#24231F"],
+    },
+  },
+  {
+    id: "a-09",
+    slug: "aditi-banerjee",
+    name: "Aditi Banerjee",
+    email: "aditi.banerjee@example.com",
+    state: "West Bengal",
+    city: "Kolkata",
+    region: "Bengal",
+    styles: ["Kantha", "Textile storytelling", "Thread drawing"],
+    mediums: ["Textile", "Handmade"],
+    bio: "A textile artist turning family stories and small domestic scenes into quiet stitched panels.",
+    story:
+      "Aditi began with old sari fragments and now builds sample panels around migration, household memory, and women’s work.",
+    verified: false,
+    followers: 0,
+    profileViews: 0,
+    audienceLocation: "Pending review",
+    topArtworkSlug: "kantha-window-sample",
+    approval_status: "pending_approval",
+    approved_by: null,
+    approved_at: null,
+    rejection_reason: null,
+    submitted_at: "2026-06-01T10:30:00.000Z",
+    visual: {
+      pattern: "phulkari",
+      colors: ["#D96C9F", "#D9A441", "#FAF8F4", "#3B6D11"],
+    },
+  },
+  {
+    id: "a-10",
+    slug: "faizan-lone",
+    name: "Faizan Lone",
+    email: "faizan.lone@example.com",
+    state: "Jammu and Kashmir",
+    city: "Srinagar",
+    region: "Kashmir Valley",
+    styles: ["Papier mache", "Floral ornament", "Surface pattern"],
+    mediums: ["Handmade", "Painting"],
+    bio: "A surface artist studying papier mache ornament through small floral sample boards.",
+    story:
+      "Faizan submitted an early profile with promising samples, but the application needs clearer artwork attribution before approval.",
+    verified: false,
+    followers: 0,
+    profileViews: 0,
+    audienceLocation: "Pending resubmission",
+    topArtworkSlug: "papier-mache-floral-sample",
+    approval_status: "rejected",
+    approved_by: null,
+    approved_at: null,
+    rejection_reason:
+      "Please add clearer sample artwork images and explain whether the floral references are original studies or archive copies.",
+    submitted_at: "2026-05-28T11:15:00.000Z",
+    visual: {
+      pattern: "miniature",
+      colors: ["#3B6D11", "#D9A441", "#D96C9F", "#24231F"],
     },
   },
 ];
@@ -641,6 +744,34 @@ export const artworks: Artwork[] = [
       pattern: "gond",
       colors: ["#3B6D11", "#C0DD97", "#D96C9F", "#D9A441"],
     },
+  },
+  {
+    id: "w-21",
+    slug: "kantha-window-sample",
+    title: "Kantha Window Sample",
+    artistSlug: "aditi-banerjee",
+    style: "Kantha",
+    state: "West Bengal",
+    category: "Handmade",
+    description:
+      "A sample stitched window study submitted with an artist application.",
+    culturalContext:
+      "Kantha stitching can carry domestic memory through repeated running stitches and cloth fragments.",
+    visual: artists[8].visual,
+  },
+  {
+    id: "w-22",
+    slug: "papier-mache-floral-sample",
+    title: "Papier Mache Floral Sample",
+    artistSlug: "faizan-lone",
+    style: "Papier mache",
+    state: "Jammu and Kashmir",
+    category: "Handmade",
+    description:
+      "A floral surface sample attached to a rejected artist application.",
+    culturalContext:
+      "The artist needs to clarify attribution and source references before public approval.",
+    visual: artists[9].visual,
   },
 ];
 
@@ -1191,18 +1322,62 @@ export function getArtistBySlug(slug: string) {
   return artists.find((artist) => artist.slug === slug);
 }
 
+export function isArtistApproved(artist?: Artist | null) {
+  return artist?.approval_status === "approved";
+}
+
+export function getApprovedArtists() {
+  return artists.filter((artist) => isArtistApproved(artist));
+}
+
+export function getApprovedArtistBySlug(slug: string) {
+  return getApprovedArtists().find((artist) => artist.slug === slug);
+}
+
 export function getArtworkBySlug(slug: string) {
   return artworks.find((artwork) => artwork.slug === slug);
+}
+
+export function getPublicArtworks() {
+  const approvedSlugs = new Set(getApprovedArtists().map((artist) => artist.slug));
+  return artworks.filter((artwork) => approvedSlugs.has(artwork.artistSlug));
+}
+
+export function getPublicArtworkBySlug(slug: string) {
+  return getPublicArtworks().find((artwork) => artwork.slug === slug);
 }
 
 export function getArtworksByArtist(slug: string) {
   return artworks.filter((artwork) => artwork.artistSlug === slug);
 }
 
+export function getPublicArtworksByArtist(slug: string) {
+  const artist = getApprovedArtistBySlug(slug);
+  if (!artist) return [];
+  return getArtworksByArtist(slug);
+}
+
 export function getArtistForArtwork(artwork: Artwork) {
   return getArtistBySlug(artwork.artistSlug);
 }
 
+export function getApprovedArtistForArtwork(artwork: Artwork) {
+  return getApprovedArtistBySlug(artwork.artistSlug);
+}
+
 export function getFeaturedArtworks() {
-  return artworks.filter((artwork) => artwork.featured).slice(0, 8);
+  return getPublicArtworks().filter((artwork) => artwork.featured).slice(0, 8);
+}
+
+export function getPublicCommunityPosts() {
+  const approvedSlugs = new Set(getApprovedArtists().map((artist) => artist.slug));
+  return communityPosts.filter((post) => approvedSlugs.has(post.artistSlug));
+}
+
+export function getPublicRegionalArtForms() {
+  const approvedNames = new Set(getApprovedArtists().map((artist) => artist.name));
+  return regionalArtForms.map((form) => ({
+    ...form,
+    featuredArtists: form.featuredArtists.filter((name) => approvedNames.has(name)),
+  }));
 }

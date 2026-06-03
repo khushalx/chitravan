@@ -3,21 +3,27 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArtworkVisual } from "@/components/artwork-visual";
 import { ShareTools } from "@/components/share-tools";
-import { artworks, getArtistForArtwork, getArtworkBySlug } from "@/lib/data";
+import {
+  getApprovedArtistForArtwork,
+  getPublicArtworkBySlug,
+  getPublicArtworks,
+} from "@/lib/data";
 
 type SharePageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
-  return artworks.map((artwork) => ({ slug: artwork.slug }));
+  return getPublicArtworks().map((artwork) => ({ slug: artwork.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: SharePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const artwork = getArtworkBySlug(slug);
+  const artwork = getPublicArtworkBySlug(slug);
 
   return {
     title: artwork ? `Share ${artwork.title}` : "Share artwork",
@@ -26,13 +32,13 @@ export async function generateMetadata({
 
 export default async function SharePage({ params }: SharePageProps) {
   const { slug } = await params;
-  const artwork = getArtworkBySlug(slug);
+  const artwork = getPublicArtworkBySlug(slug);
 
   if (!artwork) {
     notFound();
   }
 
-  const artist = getArtistForArtwork(artwork);
+  const artist = getApprovedArtistForArtwork(artwork);
 
   return (
     <section className="py-14">

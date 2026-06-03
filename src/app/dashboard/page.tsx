@@ -19,7 +19,7 @@ import { DashboardStatCard } from "@/components/dashboard-stat-card";
 import { HostWorkshopForm } from "@/components/host-workshop-form";
 import { ProfileCompletionCard } from "@/components/profile-completion-card";
 import { SectionHeader } from "@/components/section-header";
-import { artworks, communityPosts, inquiries } from "@/lib/data";
+import { artists, artworks, communityPosts, inquiries } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Your artist space",
@@ -44,7 +44,18 @@ const stats = [
   { label: "Audience location", value: "Patna, Delhi, Pune", helper: "Placeholder", icon: MapPin, bar: 67 },
 ];
 
-export default function DashboardPage() {
+type DashboardPageProps = {
+  searchParams?: Promise<{ artist?: string }>;
+};
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const currentArtist =
+    artists.find((artist) => artist.slug === resolvedSearchParams?.artist) ??
+    artists[0];
+  const isApproved = currentArtist.approval_status === "approved";
+  const isPending = currentArtist.approval_status === "pending_approval";
+  const isRejected = currentArtist.approval_status === "rejected";
   const featuredArtworks = artworks.filter((artwork) => artwork.featured);
   const priceOnRequestCount = artworks.filter((artwork) => !artwork.price).length;
 
@@ -56,6 +67,36 @@ export default function DashboardPage() {
           subtitle="Manage your profile, artworks, inquiries, workshops, and community activity."
         />
         <div className="mt-8 grid gap-6">
+          {isPending ? (
+            <article className="rounded-xl border border-[#D9A441]/45 bg-[#D9A441]/12 p-5">
+              <h2 className="font-display text-3xl text-[#3B6D11]">
+                Your artist profile is under review.
+              </h2>
+              <p className="mt-2 leading-7 text-[#6F6A60]">
+                You can edit your application, but it will not be public until
+                approved.
+              </p>
+            </article>
+          ) : null}
+          {isRejected ? (
+            <article className="rounded-xl border border-[#E76F51]/45 bg-[#E76F51]/12 p-5">
+              <h2 className="font-display text-3xl text-[#9f3d26]">
+                Your artist application was not approved.
+              </h2>
+              {currentArtist.rejection_reason ? (
+                <p className="mt-2 leading-7 text-[#6F6A60]">
+                  Reason: {currentArtist.rejection_reason}
+                </p>
+              ) : null}
+              <a
+                href="/onboarding"
+                className="mt-4 inline-flex min-h-10 items-center rounded-full bg-[#E76F51] px-4 text-sm font-semibold text-white"
+              >
+                Edit and resubmit application
+              </a>
+            </article>
+          ) : null}
+
           <section className="rounded-xl border border-[#CFC8BA] bg-[#FAF8F4] p-5">
             <h2 className="font-display text-3xl text-[#3B6D11]">Quick actions</h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
@@ -77,6 +118,7 @@ export default function DashboardPage() {
 
           <ProfileCompletionCard />
 
+          {isApproved ? (
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <article className="rounded-xl border border-[#CFC8BA] bg-[#FAF8F4] p-5">
               <p className="text-sm font-semibold text-[#6F6A60]">Total artworks</p>
@@ -109,7 +151,9 @@ export default function DashboardPage() {
               </p>
             </article>
           </section>
+          ) : null}
 
+          {isApproved ? (
           <section className="rounded-xl border border-[#CFC8BA] bg-[#FAF8F4] p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="font-display text-3xl text-[#3B6D11]">
@@ -129,6 +173,7 @@ export default function DashboardPage() {
               ))}
             </div>
           </section>
+          ) : null}
 
           <section className="grid gap-4 lg:grid-cols-3">
             <div id="upload-artwork">
@@ -142,6 +187,7 @@ export default function DashboardPage() {
             </div>
           </section>
 
+          {isApproved ? (
           <section className="grid gap-4 lg:grid-cols-[1fr_1fr]">
             <article className="rounded-xl border border-[#CFC8BA] bg-[#FAF8F4] p-5">
               <h2 className="font-display text-3xl text-[#3B6D11]">
@@ -178,7 +224,9 @@ export default function DashboardPage() {
               </div>
             </article>
           </section>
+          ) : null}
 
+          {isApproved ? (
           <section>
             <h2 className="font-display text-4xl text-[#3B6D11]">
               Basic analytics
@@ -189,6 +237,7 @@ export default function DashboardPage() {
               ))}
             </div>
           </section>
+          ) : null}
         </div>
       </div>
     </section>

@@ -8,27 +8,29 @@ import { SectionHeader } from "@/components/section-header";
 import { TagPill } from "@/components/tag-pill";
 import { VerifiedBadge } from "@/components/verified-badge";
 import {
-  artists,
-  communityPosts,
-  getArtistBySlug,
-  getArtworkBySlug,
-  getArtworksByArtist,
-  regionalArtForms,
+  getApprovedArtistBySlug,
+  getApprovedArtists,
+  getPublicArtworkBySlug,
+  getPublicArtworksByArtist,
+  getPublicCommunityPosts,
+  getPublicRegionalArtForms,
 } from "@/lib/data";
 
 type ArtistPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
-  return artists.map((artist) => ({ slug: artist.slug }));
+  return getApprovedArtists().map((artist) => ({ slug: artist.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: ArtistPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const artist = getArtistBySlug(slug);
+  const artist = getApprovedArtistBySlug(slug);
 
   if (!artist) {
     return { title: "Artist not found" };
@@ -42,23 +44,24 @@ export async function generateMetadata({
 
 export default async function ArtistProfilePage({ params }: ArtistPageProps) {
   const { slug } = await params;
-  const artist = getArtistBySlug(slug);
+  const artist = getApprovedArtistBySlug(slug);
 
   if (!artist) {
     notFound();
   }
 
-  const artistArtworks = getArtworksByArtist(artist.slug);
+  const artistArtworks = getPublicArtworksByArtist(artist.slug);
+  const regionalArtForms = getPublicRegionalArtForms();
   const tradition =
     regionalArtForms.find((form) =>
       artist.styles.some((style) =>
         form.name.toLowerCase().includes(style.toLowerCase()),
       ),
     ) ?? regionalArtForms.find((form) => form.state === artist.state);
-  const recentPosts = communityPosts
+  const recentPosts = getPublicCommunityPosts()
     .filter((post) => post.artistSlug === artist.slug)
     .slice(0, 3);
-  const topArtwork = getArtworkBySlug(artist.topArtworkSlug);
+  const topArtwork = getPublicArtworkBySlug(artist.topArtworkSlug);
 
   return (
     <>

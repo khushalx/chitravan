@@ -4,7 +4,15 @@ import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { Mail, ShieldCheck } from "lucide-react";
 
-const roles = ["Artist", "Collector / Viewer", "Admin"];
+const roles = ["Artist", "Collector / Viewer"];
+
+function isAdminEmail(email: string) {
+  return (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean)
+    .includes(email.trim().toLowerCase());
+}
 
 export function AuthPanel() {
   const [email, setEmail] = useState("");
@@ -34,11 +42,15 @@ export function AuthPanel() {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     );
 
+    const resolvedRole = isAdminEmail(email) ? "Admin" : role;
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        data: { role },
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        data: { role: resolvedRole },
+        emailRedirectTo: `${window.location.origin}/${
+          resolvedRole === "Admin" ? "admin" : "dashboard"
+        }`,
       },
     });
 
@@ -63,8 +75,8 @@ export function AuthPanel() {
         Join Chitravan
       </h1>
       <p className="mt-3 leading-7 text-[#6F6A60]">
-        Magic-link sign in with artist, collector, and admin roles prepared for
-        Supabase profiles.
+        Magic-link sign in with artist and collector roles. Admin role is
+        assigned only when the email is listed in NEXT_PUBLIC_ADMIN_EMAILS.
       </p>
       <label className="mt-6 grid gap-2 text-sm font-semibold text-[#24231F]">
         Email
